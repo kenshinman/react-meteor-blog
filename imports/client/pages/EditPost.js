@@ -5,10 +5,10 @@ import Dropzone from "react-dropzone";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Posts from "../../api/collections/Posts";
+import keys from '../../keys'
 
-const CLOUDINARY_UPLOAD_PRESET = "b8xgwxlq";
-const CLOUDINARY_UPLOAD_URL =
-  "https://api.cloudinary.com/v1_1/kaydence-co/upload";
+const CLOUDINARY_UPLOAD_PRESET = keys.cloudinary.presetName;
+const CLOUDINARY_UPLOAD_URL = keys.cloudinary.uploadUrl;
 
 class EditPost extends Component {
   constructor(props) {
