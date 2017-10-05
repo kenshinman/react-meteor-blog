@@ -4,7 +4,7 @@ import { createContainer } from "meteor/react-meteor-data";
 import Dropzone from "react-dropzone";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import Posts from '../../api/collections/Posts'
+import Posts from "../../api/collections/Posts";
 
 const CLOUDINARY_UPLOAD_PRESET = "b8xgwxlq";
 const CLOUDINARY_UPLOAD_URL =
@@ -12,16 +12,16 @@ const CLOUDINARY_UPLOAD_URL =
 
 class EditPost extends Component {
   constructor(props) {
-		super(props);
-		
-		const {title, content, featuredImage} = props.post;
+    super(props);
     this.state = {
-      title,
-      content,
+      title: "",
+      content: "",
       uploading: false,
       showUploading: false,
+      loading: true,
       uploadedFileCloudinaryUrl: ""
     };
+    Meteor.subscribe("AllPosts");
     this.updatePost = this.updatePost.bind(this);
   }
 
@@ -77,6 +77,8 @@ class EditPost extends Component {
   }
 
   handleSubmit(e) {
+		
+    e.preventDefault();
     const newPost = {
       id: this.props.match.params.id,
       title: this.refs.title.value,
@@ -85,10 +87,8 @@ class EditPost extends Component {
       featuredImage: this.state.uploadedFileCloudinaryUrl,
       createdAt: new Date()
     };
-		console.log(newPost);
-		return false;
+    
     this.updatePost(newPost);
-    e.preventDefault();
   }
 
   handleTextChange(e) {
@@ -99,6 +99,8 @@ class EditPost extends Component {
     this.setState({ [name]: value });
   }
 
+  componentDidMount() {}
+
   componentDidUpdate(prevProps, prevState) {
     $(".button-collapse").sideNav({
       closeOnClick: true,
@@ -106,77 +108,86 @@ class EditPost extends Component {
     });
   }
   render() {
-		//console.log(this.state.uploadedFileCloudinaryUrl);
     return (
       <div>
         <Navbar />
-        <div className="row">
-          <div className="col s12 m8 offset-m2">
-            <h2>New Post</h2>
-            <form onSubmit={this.handleSubmit.bind(this)}>
-              <div className="row">
-                <div className="input-field col s12">
-                  <input
-                    autoFocus
-                    id="title"
-                    type="text"
-                    className="validate"
-                    onChange={this.handleTextChange.bind(this)}
-                    ref="title"
-                    value={this.state.title}
-                    name="title"
-                  />
-                  <label>Title</label>
-                </div>
-                <div className="input-field col s12">
-                  <textarea
-                    id="textarea1"
-                    className="materialize-textarea"
-                    onChange={this.handleTextChange.bind(this)}
-                    ref="content"
-                    value={this.state.content}
-                    name="content"
-                  />
-                  <label>Content</label>
-                </div>
+        {this.props.post ? (
+          <div className="row">
+            <div className="col s12 m8 offset-m2">
+              <h2>New Post</h2>
+              <form onSubmit={this.handleSubmit.bind(this)}>
                 <div className="row">
-                  <div className="col s12 m6">
-                    <Dropzone
-                      multiple={false}
-                      accept="image/*"
-                      onDrop={this.onImageDrop.bind(this)}
-                    >
-                      <p>Drop an image or click to select a file to upload.</p>
-                    </Dropzone>
-                  </div>
-                  <div className="col s12 m6">
-                    {this.state.uploading ? (
-                      <div className="progress">
-                        <div className="indeterminate" />
-                      </div>
-                    ) : null}
-                    <img
-                      src={this.state.uploadedFileCloudinaryUrl}
-                      width="250"
-                      height="auto"
+                  <div className="input-field col s12">
+                    <input
+                      autoFocus
+                      id="title"
+                      type="text"
+                      className="validate"
+                      onChange={this.handleTextChange.bind(this)}
+                      ref="title"
+                      //value={this.props.post.title}
+											defaultValue={this.props.post.title}
+                      name="title"
                     />
+                    <label>Title</label>
                   </div>
+                  <div className="input-field col s12">
+                    <textarea
+                      id="textarea1"
+                      className="materialize-textarea"
+                      onChange={this.handleTextChange.bind(this)}
+                      ref="content"
+                      //value={this.state.content}
+											defaultValue={this.props.post.content}
+                      name="content"
+                    />
+                    <label>Content</label>
+                  </div>
+                  <div className="row">
+                    <div className="col s12 m6">
+                      <Dropzone
+                        multiple={false}
+                        accept="image/*"
+                        onDrop={this.onImageDrop.bind(this)}
+                      >
+                        <p>
+                          Drop an image or click to select a file to upload.
+                        </p>
+                      </Dropzone>
+                    </div>
+                    <div className="col s12 m6">
+                      {this.state.uploading ? (
+                        <div className="progress">
+                          <div className="indeterminate" />
+                        </div>
+                      ) : null}
+                      <img
+                        src={this.state.uploadedFileCloudinaryUrl}
+                        width="250"
+                        height="auto"
+                      />
+                    </div>
+                  </div>
+                  <input type="submit" value="Submit" className="btn red" />
                 </div>
-                <input type="submit" value="Submit" className="btn red" />
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
+        ) : (
+          <h4>Loading</h4>
+        )}
       </div>
     );
   }
 }
 
-export default createContainer((props) => {
-	Meteor.subscribe("AllPosts");
-	let _id = props.match.params.id;
-	console.log(_id);
-	return {
-		post: Posts.findOne({_id})
-	}
-}, EditPost)
+export default createContainer(props => {
+  Meteor.subscribe("AllPosts");
+
+  let _id = props.match.params.id;
+  const post = Posts.findOne({ _id });
+  
+  return {
+    post
+  };
+}, EditPost);
