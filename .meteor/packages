@@ -25,5 +25,12 @@ dapearce:material-icons
 aldeed:collection2-core
 react-meteor-data
 erasaur:meteor-lodash
-jalik:ufs
-jalik:ufs-local
+accounts-password
+simple:rest
+simple:json-routes
+simple:rest-accounts-password
+simple:rest-json-error-handler
+simple:authenticate-user-by-token
+simple:rest-bearer-token-parser
+simple:rest-method-mixin
+check
