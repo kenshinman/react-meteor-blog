@@ -1,13 +1,5 @@
-function isValid(content, type, length) {
-  if (content.length < length) {
-    return false;
-  } else if (typeof content !== type) {
-    return false;
-  } else {
-    return true;
-  }
-}
 import { Meteor } from "meteor/meteor";
+import { isValid } from "../imports/helpers/isValid";
 import Posts from "../imports/api/collections/Posts";
 
 Meteor.methods({
@@ -52,7 +44,4 @@ Meteor.methods({
       );
     }
   },
-  "posts.findone": function(id){
-    return Posts.findOne({_id: id})
-  }
 });

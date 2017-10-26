@@ -34,3 +34,4 @@ simple:authenticate-user-by-token
 simple:rest-bearer-token-parser
 simple:rest-method-mixin
 check
+alanning:roles

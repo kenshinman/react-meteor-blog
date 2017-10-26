@@ -40,7 +40,7 @@ Schemas.Post = new SimpleSchema({
 });
 
 Posts.allow({
-  insert: function(){
+  insert: function(userId){
     return true;
   }
 })
